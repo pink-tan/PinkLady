@@ -54,8 +54,8 @@ namespace PinkLady
         /// </summary>
         private void Draw()
         {
-		    // リソーステーブル
-            string[] DATA = 
+            // リソーステーブル
+            string[] DATA =
             {
                 PinkLady.Properties.Resources._1,
                 PinkLady.Properties.Resources._2,
@@ -68,46 +68,46 @@ namespace PinkLady
 
             // 面選択状態取得
             int index = cmbStage.SelectedIndex;
-		
+
             // 面選択状態が有効な範囲の場合
-		    if (index >= 0 && index < 6)
+            if (index >= 0 && index < 6)
             {
                 // 現在の面についてリソース読み込み
                 string data = DATA[index];
                 string[] splited = data.Replace("\r\n", "\n").Split('\n');
-		
-		        // PictureBoxの配置
-		        SetPictureBoxPositions();
-		
-		        // 下から上の場合、リソースを反転
-		        if (!TopDown) Array.Reverse(splited);
-		
-		        // ファイル単位の描画
-		        Draw(picboxCur, splited, true, 3, false);
-		
-		        // 次の面についてリソース読み込み
-		        string nextdata = DATA[index + 1];
-		        string[] nextsplited = { nextdata.Replace("\r\n", "\n").Split('\n')[0] };
-		
-		        // ファイル単位の描画
-		        Draw(picboxNext, nextsplited, false, 3, true);
-		    }
-		}
-		
-		/// <summary>
-		/// PictureBoxの位置を設定する
-		/// </summary>
-		private void SetPictureBoxPositions()
-		{
-                if (TopDown)
-                {
-                    picboxCur.Top =  38;
-                    picboxNext.Top = 214;
-                }
-                else
-                {
-                    picboxCur.Top = 58;
-                    picboxNext.Top = 38;
+
+                // PictureBoxの配置
+                SetPictureBoxPositions();
+
+                // 下から上の場合、リソースを反転
+                if (!TopDown) Array.Reverse(splited);
+
+                // ファイル単位の描画
+                Draw(picboxCur, splited, true, 3, false);
+
+                // 次の面についてリソース読み込み
+                string nextdata = DATA[index + 1];
+                string[] nextsplited = { nextdata.Replace("\r\n", "\n").Split('\n')[0] };
+
+                // ファイル単位の描画
+                Draw(picboxNext, nextsplited, false, 3, true);
+            }
+        }
+
+        /// <summary>
+        /// PictureBoxの位置を設定する
+        /// </summary>
+        private void SetPictureBoxPositions()
+        {
+            if (TopDown)
+            {
+                picboxCur.Top  =  38;
+                picboxNext.Top = 214;
+            }
+            else
+            {
+                picboxCur.Top  = 58;
+                picboxNext.Top = 38;
             }
         }
 
@@ -121,19 +121,19 @@ namespace PinkLady
         /// <param name="nextStage">次の面フラグ</param>
         private void Draw(PictureBox pictureBox, string[] data, bool big, int startPosY, bool nextStage)
         {
-		    // Graphicsの取得と初期化
-		    InitializeGraphics(pictureBox, out Graphics graphics);
+            // Graphicsの取得と初期化
+            InitializeGraphics(pictureBox, out Graphics graphics);
 
             // 基本フォント取得
             Font defaultFont = fontManager.GetFont(big);
 
             // 1行ずつ処理
             int y = startPosY;
-		    foreach (string line in data)
+            foreach (string line in data)
             {
-		        if (string.IsNullOrEmpty(line)) continue;
-		
-		        if (line == "--")
+                if (string.IsNullOrEmpty(line)) continue;
+
+                if (line == "--")
                 {
                     // 隙間を作る
                     y += (int)defaultFont.Size / 2 + 2;
@@ -144,8 +144,8 @@ namespace PinkLady
                     string[] ufos = line.Split('|');
 
                     // 1UFOずつ処理
-		            int x = CalculateInitialXPosition(graphics, ufos.Length, defaultFont);
-		            foreach (string ufo in ufos)
+                    int x = CalculateInitialXPosition(graphics, ufos.Length, defaultFont);
+                    foreach (string ufo in ufos)
                     {
                         // UFO単位の描画
                         Draw(graphics, ufo, big, x, y);
@@ -164,27 +164,27 @@ namespace PinkLady
                     y += (int)defaultFont.Size + 4;
                 }
             }
-		
+
             // Graphicsの破棄
             graphics.Dispose();
         }
 
-		private void InitializeGraphics(PictureBox pictureBox, out Graphics graphics)
-		{
-		    pictureBox.Image = new Bitmap(pictureBox.Width, pictureBox.Height);
-		    graphics = Graphics.FromImage(pictureBox.Image);
-		
-		    using (Brush brush = new SolidBrush(Color.FromArgb(255, 240, 240)))
-		    {
-		        graphics.FillRectangle(brush, graphics.VisibleClipBounds);
-		    }
-		}
-		
-		private int CalculateInitialXPosition(Graphics graphics, int ufosLength, Font defaultFont)
-		{
-		    return ((int)graphics.VisibleClipBounds.Width - (ufosLength * ((int)(defaultFont.Size * 1.3)))) / 2;
-		}
-		
+        private void InitializeGraphics(PictureBox pictureBox, out Graphics graphics)
+        {
+            pictureBox.Image = new Bitmap(pictureBox.Width, pictureBox.Height);
+            graphics = Graphics.FromImage(pictureBox.Image);
+
+            using (Brush brush = new SolidBrush(Color.FromArgb(255, 240, 240)))
+            {
+                graphics.FillRectangle(brush, graphics.VisibleClipBounds);
+            }
+        }
+
+        private int CalculateInitialXPosition(Graphics graphics, int ufosLength, Font defaultFont)
+        {
+            return ((int)graphics.VisibleClipBounds.Width - (ufosLength * ((int)(defaultFont.Size * 1.3)))) / 2;
+        }
+
         /// <summary>
         /// UFO単位の描画
         /// </summary>
@@ -195,16 +195,16 @@ namespace PinkLady
         /// <param name="y">Y座標</param>
         private void Draw(Graphics graphics, string ufo, bool big, int x, int y)
         {
-		    // 文字の色とフォントの取得
-		    (Brush color, Font font) = GetColorAndFont(ref ufo, big);
-		
-		    // 描画
-		    graphics.DrawString(ufo, font, color, x, y);
-		}
-		
-		private (Brush color, Font font) GetColorAndFont(ref string ufo, bool big)
-		{
-		    Brush color = Brushes.BlueViolet;
+            // 文字の色とフォントの取得
+            (Brush color, Font font) = GetColorAndFont(ref ufo, big);
+
+            // 描画
+            graphics.DrawString(ufo, font, color, x, y);
+        }
+
+        private (Brush color, Font font) GetColorAndFont(ref string ufo, bool big)
+        {
+            Brush color = Brushes.BlueViolet;
             Font font;
 
             // 文字の色
@@ -238,7 +238,7 @@ namespace PinkLady
                     break;
             }
 
-		    return (color, font);
+            return (color, font);
         }
 
         /// <summary>
@@ -274,14 +274,14 @@ namespace PinkLady
     public class FontManager
     {
         private const string FONTNAME = "ＭＳ ゴシック";
-	    
-	    public Font BigBold { get; }
-	    public Font Big { get; }
-	    public Font SmallBold { get; }
-	    public Font Small { get; }
+
+        public Font BigBold { get; }
+        public Font Big { get; }
+        public Font SmallBold { get; }
+        public Font Small { get; }
 
         /// <summary>
-	    /// コンストラクタでフォントの初期化
+        /// コンストラクタでフォントの初期化
         /// </summary>
         public FontManager()
         {
